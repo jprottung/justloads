@@ -1,18 +1,39 @@
 {
-  "name": "justloads",
-  "version": "1.0.0",
-  "description": "simple module for just loading the stuff you neet",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "keywords": [
-    "loading",
-    "es6",
-    "rollup",
-    "asynchronous",
-    "performance"
-  ],
-  "author": "Janik Prottung",
-  "license": "ISC"
+    "name": "justloads",
+    "version": "1.0.0",
+    "description": "simple module for just loading the stuff you neet",
+    "main": "index.js",
+    "scripts": {
+        "dev": "rollup -c --watch",
+        "reload": "livereload 'build/'",
+        "watch": "npm-run-all --parallel reload dev",
+        "test": "test"
+    },
+    "keywords": [
+        "loading",
+        "es6",
+        "rollup",
+        "asynchronous",
+        "performance"
+    ],
+    "author": "Janik Prottung",
+    "license": "ISC",
+    "devDependencies": {
+        "babel-preset-es2015-rollup": "^3.0.0",
+        "eslint": "^3.18.0",
+        "eslint-config-google": "^0.7.1",
+        "livereload": "^0.6.2",
+        "npm-run-all": "^4.0.2",
+        "rollup": "^0.41.6",
+        "rollup-plugin-babel": "^2.7.1",
+        "rollup-plugin-commonjs": "^8.0.2",
+        "rollup-plugin-eslint": "^3.0.0",
+        "rollup-plugin-node-resolve": "^2.1.0",
+        "rollup-plugin-replace": "^1.1.1",
+        "rollup-plugin-uglify": "^1.0.1",
+        "rollup-watch": "^3.2.2"
+    },
+    "dependencies": {
+        "debug": "^2.6.3"
+    }
 }
