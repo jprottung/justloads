@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>This is an example page for testing the features of the loader</title>
+    <script>
+        document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+            ':35729/livereload.js?snipver=1"></' + 'script>')
+    </script></head>
+<body>
+<script>
+    (function () {
+        var head = document.getElementsByTagName('head')[0],
+            script = document.createElement('script');
+        script.async = true;
+        script.src = '../dist/justloads.js';
+        head.appendChild(script);
+    }());
+</script>
+</body>
+</html>
