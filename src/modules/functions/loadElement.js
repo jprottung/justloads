@@ -1,4 +1,4 @@
-import * as loadStorage from '../loadStorage';
+import loadStorageService from '../services/LoadStorageService';
 import createElement from './createElement';
 import insertElement from './insertElement';
 import loadElementPromise from './loadElementPromise';
@@ -12,7 +12,7 @@ import loadElementPromise from './loadElementPromise';
  */
 export default function loadElement(url, type, attributes = {}) {
     const element = createElement(type, attributes);
-    let loadedElement = loadStorage.loaded(url);
+    let loadedElement = loadStorageService.loaded(url);
 
     if (loadedElement) {
         return Promise.resolve(loadedElement);
@@ -20,9 +20,8 @@ export default function loadElement(url, type, attributes = {}) {
 
     const p = loadElementPromise(element);
 
-    p.then((element) => {
-        loadStorage.push(url, element);
-    }, ()=>{});
+    p.then(element => loadStorageService.push(url, element), () => {
+    });
 
     insertElement(element);
 

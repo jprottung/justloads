@@ -1,8 +1,6 @@
 'use strict';
 
-const readyState = 'readyState',
-    onreadystatechange = 'onreadystatechange',
-    addEventListener = 'addEventListener';
+
 
 /**
  *

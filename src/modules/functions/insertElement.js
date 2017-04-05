@@ -1,5 +1,4 @@
-const d = document;
-const getElementsByTagName = 'getElementsByTagName';
+
 
 /**
  *

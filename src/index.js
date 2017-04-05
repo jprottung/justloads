@@ -1,5 +1,6 @@
 // Import a couple modules for testing.
 import load from './modules/load';
+import preloadPolyfill from './modules/preloadPolyfill';
 
 // Import a logger for easier debugging.
 import debug from 'debug';
@@ -15,6 +16,8 @@ if (ENV !== 'production') {
 }
 
 log('That is very cool');
+
+preloadPolyfill();
 
 load('js', '../dist/core.js').then(() => {
     log('lodash loaded');
