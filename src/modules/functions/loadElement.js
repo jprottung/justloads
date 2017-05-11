@@ -18,12 +18,12 @@ export default function loadElement(url, type, attributes = {}) {
         return Promise.resolve(loadedElement);
     }
 
-    const p = loadElementPromise(element);
+    const promise = loadElementPromise(element);
 
-    p.then(element => loadStorageService.push(url, element), () => {
+    promise.then(element => loadStorageService.push(url, element), () => {
     });
 
     insertElement(element);
 
-    return p;
+    return promise;
 }

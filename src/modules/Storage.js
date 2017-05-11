@@ -11,6 +11,8 @@ export default class Storage {
          * @type {Object.<string, Element>}
          */
         this.cache = {};
+
+
     }
 
     /**

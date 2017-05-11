@@ -1,3 +1,6 @@
+import { d } from './../constants/global';
+import entries from './entries';
+
 /**
  * Creates an Element with a given type and a number of attributes
  *
@@ -6,12 +9,10 @@
  * @returns {Element}
  */
 export default function createElement(type, attributes = {}) {
-    const element = document.createElement(type);
+    const element = d.createElement(type);
 
-    for (let attributeKey in attributes) {
-        if (attributes.hasOwnProperty(attributeKey)) {
-            element.setAttribute(attributeKey, attributes[attributeKey]);
-        }
+    for (let [key, value] of entries(attributes)) {
+        element.setAttribute(key, value);
     }
 
     return element;

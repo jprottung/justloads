@@ -1,13 +1,12 @@
 import preloadSupport from './features/preloadSupport';
 import loadCss from './loader/loadCss';
-
-const w = window;
+import {w, d} from './constants/global';
 
 /**
  *
  */
 function polyfill() {
-    const links = w.document.getElementsByTagName('link');
+    const links = d.getElementsByTagName('link');
 
     for (let i = 0; i < links.length; i += 1) {
         let link = links[i];

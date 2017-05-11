@@ -1,11 +1,13 @@
+import createElement from './../functions/createElement';
+
 /**
+ * checks whether a browser supports pre loading styles or not
  *
  * @return {boolean}
  */
-
 export default function preloadSupport() {
     try {
-        return window.document.createElement('link')
+        return createElement('link')
             .relList
             .supports('preload');
     } catch (e) {

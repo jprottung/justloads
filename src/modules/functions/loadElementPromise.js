@@ -1,6 +1,4 @@
-'use strict';
-
-
+import {readyState, onreadystatechange} from './../constants/global';
 
 /**
  *

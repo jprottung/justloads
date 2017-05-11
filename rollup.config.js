@@ -7,13 +7,12 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
-import serve from 'rollup-plugin-serve';
 
 export default {
     entry: 'src/index.js',
     dest: 'dist/justloads'+ (process.env.NODE_ENV === 'production' ? '.min': '') +'.js',
     format: 'iife',
-    sourceMap: 'inline',
+    sourceMap: process.env.NODE_ENV !== 'production' ? 'inline': true,
     plugins: [
         resolve({
             jsnext: true,
@@ -21,11 +20,11 @@ export default {
             browser: true,
         }),
         commonjs(),
-        eslint({
+        (process.env.NODE_ENV !== 'production' &&  eslint({
             includes: [
                 'src/**',
             ]
-        }),
+        })),
         babel({
             exclude: 'node_modules/**',
         }),
@@ -34,9 +33,5 @@ export default {
             ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
         }),
         (process.env.NODE_ENV === 'production' && uglify()),
-        (process.env.NODE_ENV !== 'production' &&  serve({
-            contentBase: '',
-            port: 1337,
-        })),
     ],
 };
