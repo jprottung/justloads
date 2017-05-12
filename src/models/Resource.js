@@ -14,7 +14,6 @@ export default class Resource {
         this._key = options.key;
         this._type = options.type;
         this._status = options.status || RESOURCE_INITIALIZED;
-        this._options = options.options;
     }
 
     /**
