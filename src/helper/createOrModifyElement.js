@@ -10,15 +10,15 @@ import forEach from './forEach';
 import isString from './isString';
 
 export default function createOrModifyElement(typeOrElement, attributes = {}) {
-    let element;
+  let element;
 
-    if (isString(typeOrElement)) {
-        element = d.createElement(typeOrElement);
-    } else {
-        element = typeOrElement;
-    }
+  if (isString(typeOrElement)) {
+    element = d.createElement(typeOrElement);
+  } else {
+    element = typeOrElement;
+  }
 
-    forEach(attributes, (value, key) => element.setAttribute(key, value));
+  forEach(attributes, (value, key) => element.setAttribute(key, value));
 
-    return element;
+  return element;
 }

@@ -5,5 +5,5 @@
  * @return {boolean}
  */
 export default function isBoolean(variable) {
-    return Object.prototype.toString.call(variable) === '[object Boolean]';
+  return Object.prototype.toString.call(variable) === '[object Boolean]';
 }

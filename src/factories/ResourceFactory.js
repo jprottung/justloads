@@ -4,33 +4,33 @@ import Resource from '../models/Resource';
  *
  * @type {{createResource}}
  */
-const ResourceFactory = (function () {
+const ResourceFactory = () => {
+  /**
+   *
+   * @type {{}}
+   */
+  const resourceStorage = {};
+
+  return {
     /**
      *
-     * @type {{}}
+     * @param {{key:string, type:string, options: object, [status]: string}} options
+     * @return {Resource}
      */
-    const resourceStorage = {};
+    createResource: (options) => {
+      const key = options.key;
+      const storedResource = resourceStorage[key];
 
-    return {
-        /**
-         *
-         * @param {{key:string, type:string, options: object, [status]: string}} options
-         * @return {Resource}
-         */
-        createResource: function (options) {
-            const key = options.key;
-            const storedResource = resourceStorage[key];
+      if (storedResource) {
+        return storedResource;
+      }
 
-            if (storedResource) {
-                return storedResource;
-            }
+      const newResource = new Resource(options);
+      resourceStorage[key] = newResource;
 
-            const newResource = new Resource(options);
-            resourceStorage[key] = newResource;
-
-            return newResource;
-        }
-    };
-})();
+      return newResource;
+    }
+  };
+};
 
 export default ResourceFactory;

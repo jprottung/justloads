@@ -5,5 +5,5 @@
  * @return {boolean}
  */
 export default function isArray(variable) {
-    return Array.isArray(variable);
+  return Array.isArray(variable);
 }

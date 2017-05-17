@@ -1,44 +1,44 @@
 import isFunction from '../helper/isFunction';
 
 class Queue {
-    constructor(initial = [], clone = false) {
-        if (clone) {
-            this.queue = initial.slice(0);
-        } else {
-            this.queue = initial;
-        }
+  constructor(initial = [], clone = false) {
+    if (clone) {
+      this.queue = initial.slice(0);
+    } else {
+      this.queue = initial;
     }
+  }
 
-    static _checkMethod(fn) {
-        if (!isFunction(fn)) {
-            throw new TypeError('fn must be a function');
-        }
+  static checkMethod(fn) {
+    if (!isFunction(fn)) {
+      throw new TypeError('fn must be a function');
     }
+  }
 
-    /**
-     *
-     */
-    empty() {
-        const queue = this.queue;
-        while (queue.length) {
-            const current = queue.pop();
-            this.call.apply(this, current);
-        }
+  /**
+   *
+   */
+  empty() {
+    const queue = this.queue;
+    while (queue.length) {
+      const current = queue.pop();
+      this.call(...current);
     }
+  }
 
-    /**
-     *
-     * @param fn
-     * @param args
-     */
-    call(fn, args = []) {
-        this._checkMethod(fn);
-        fn.apply(args);
-    }
+  /**
+   *
+   * @param fn
+   * @param args
+   */
+  call(fn, args = []) {
+    this.checkMethod(fn);
+    fn.apply(args);
+  }
 
-    push() {
-        this.call.apply(this, arguments);
-    }
+  push(...args) {
+    this.call(...args);
+  }
 }
 
 export default Queue;
