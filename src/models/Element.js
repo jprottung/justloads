@@ -1,5 +1,5 @@
 import { d } from './../constants/global';
-import entries from '../helper/entries';
+import forEach from '../helper/forEach';
 import isObject from '../helper/isObject';
 
 
@@ -25,9 +25,8 @@ class Element {
         if(isObject(attributes)) {
             Object.assign(this.attrs, attributes);
         }
-        for(let [key, value] of entries(this.attrs)) {
-            this.element.setAttribute(key, value);
-        }
+
+        forEach(this.attrs, (value, key) => this.element.setAttribute(key, value));
     }
 
     /**

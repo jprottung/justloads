@@ -1,24 +1,39 @@
 import AbstractLoader from './AbstractLoader';
+import createOrModifyElement from '../helper/createOrModifyElement';
+import insertElement from '../helper/insertElement';
+import loadElementPromise from '../helper/loadElementPromise';
 
 class AbstractElementLoader extends AbstractLoader {
-    load(resource) {
-        const elementProperties = this._prepareElement(resource);
-
-        return this._loadElement(elementProperties);
+    constructor() {
+        super();
+        this.beforeAttributes = {};
+        this.successAttributes = {};
+        this.failAttributes = {};
+        this.type = 'div';
     }
 
     /**
      *
-     * @param elementProperties
-     * @return {Promise}
-     * @private
+     * @param beforeAttributes
+     * @param successAttributes
+     * @param failAttributes
+     * @return {*}
      */
-    static _loadElement(elementProperties) {
-        return new Promise();
-    }
+    loadElement(beforeAttributes = {}, successAttributes = {}, failAttributes = {}) {
+        const before = Object.assign({}, this.beforeAttributes, beforeAttributes);
+        const success = Object.assign({}, this.successAttributes, successAttributes);
+        const fail = Object.assign({}, this.failAttributes, failAttributes);
 
-    static _prepareElement(resource) {
-        return elementProperties;
+        const element = createOrModifyElement(this.type, before);
+
+        const promise = loadElementPromise(element);
+        promise.then(
+            element => createOrModifyElement(element, success),
+            (error, element) => createOrModifyElement(element, fail));
+
+        insertElement(element);
+
+        return promise;
     }
 }
 

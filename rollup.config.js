@@ -10,9 +10,14 @@ import uglify from 'rollup-plugin-uglify';
 
 export default {
     entry: 'src/index.js',
-    dest: 'dist/justloads'+ (process.env.NODE_ENV === 'production' ? '.min': '') +'.js',
-    format: 'iife',
-    sourceMap: process.env.NODE_ENV !== 'production' ? 'inline': true,
+    dest: 'dist/justloads' + (process.env.NODE_ENV === 'production' ? '.min' : '') + '.js',
+    format: 'umd',
+    moduleName: 'justloads',
+    globals: {
+        window: 'window',
+        document: 'document'
+    },
+    sourceMap: process.env.NODE_ENV !== 'production' ? 'inline' : true,
     plugins: [
         resolve({
             jsnext: true,
@@ -20,7 +25,7 @@ export default {
             browser: true,
         }),
         commonjs(),
-        (process.env.NODE_ENV !== 'production' &&  eslint({
+        (process.env.NODE_ENV !== 'production' && eslint({
             includes: [
                 'src/**',
             ]

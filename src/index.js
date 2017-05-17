@@ -1,13 +1,14 @@
 // Import a couple modules for testing.
-import load from './modules/load';
-import preloadPolyfill from './modules/preloadPolyfill';
+import LoaderFactory from './factories/LoaderFactory';
+import ObjectFnQueue from './models/ObjectFnQueue';
 
-preloadPolyfill();
+const justloads = {
+    load: function (type, options) {
+        debugger;
+        LoaderFactory.get(type).load(options);
+    },
+};
 
-load('js', '../dist/core.js')
-    .then(() => {
-    })
-    .catch(() => {
-    });
+window.jl_queue = new ObjectFnQueue(justloads, window.jl_queue || []);
 
-load('css', 'test.css');
+export default justloads;
