@@ -1,11 +1,16 @@
 {
+    "globals": {
+        "window": true
+    },
     "extends": "airbnb-base",
     "env": {
         "node": true,
         "browser": true,
-        "mocha": true
+        "mocha": true,
+        "es6": true
     },
     "rules": {
+        "max-len": ["warn", 100],
         "import/prefer-default-export": 0,
         "arrow-parens": 0,
         "padded-blocks": 0,

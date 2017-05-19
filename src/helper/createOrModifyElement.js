@@ -5,9 +5,9 @@
  * @param {Object} [attributes]
  * @returns {Element}
  */
+import isString from './isString';
 import { d } from './../constants/global';
 import forEach from './forEach';
-import isString from './isString';
 
 export default function createOrModifyElement(typeOrElement, attributes = {}) {
   let element;

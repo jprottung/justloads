@@ -1,9 +1,11 @@
+const nativeIsArray = Array.isArray;
+
 /**
  * tests if variable is array
  *
  * @param {*} variable
- * @return {boolean}
+ * @return {*|boolean}
  */
-export default function isArray(variable) {
-  return Array.isArray(variable);
-}
+export default nativeIsArray || function isArray(variable) {
+  return toString.call(variable) === '[object Array]';
+};

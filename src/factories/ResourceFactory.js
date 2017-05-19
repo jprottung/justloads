@@ -2,12 +2,13 @@ import Resource from '../models/Resource';
 
 /**
  *
- * @type {{createResource}}
+ * @return {{createResource: (function({key: string, type: string, options: Object, status?: string}))}}
+ * @constructor
  */
 const ResourceFactory = () => {
   /**
    *
-   * @type {{}}
+   * @type {Object}
    */
   const resourceStorage = {};
 

@@ -5,7 +5,7 @@ import isObject from '../helper/isObject';
 class Element {
   /**
    *
-   * @param {{type:string, attrs:Object}} options
+   * @param {{type:string, attributes:Object}} options
    */
   constructor({
                 type,
