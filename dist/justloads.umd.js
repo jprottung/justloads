@@ -70,16 +70,13 @@ var addEventListener = 'addEventListener';
 
 /**
  *
- * @param {Array|Object} obj
+ * @param {Object} obj
  * @param {Function} callback
  */
 function forEach(obj, callback) {
-  Object.entries(obj)
-    .forEach(function (ref) {
-      var key = ref[0];
-      var value = ref[1];
-
-      callback(value, key);
+  Object.keys(obj)
+    .forEach(function (key) {
+      callback(obj[key], key);
     });
 }
 
@@ -299,14 +296,31 @@ var LoaderFactory = function () {
   };
 };
 
+var optimizableIsFunction = typeof /./ !== 'function' && typeof Int8Array !== 'object' &&
+  typeof nodelist !== 'function';
+
+/**
+ * resolves whether a variable is of type function
+ * @param {*} variable
+ * @return {boolean}
+ */
+function functionTypeCheck(variable) {
+  if (optimizableIsFunction) {
+    return typeof variable === 'function' || false;
+  }
+
+  var getType = {};
+
+  return getType.toString.call(variable) === '[object Function]';
+}
+
 /**
  * checks whether variable is a function
  * @param {*} variable
  * @return {*|boolean}
  */
 function isFunction(variable) {
-  var getType = {};
-  return variable && getType.toString.call(variable) === '[object Function]';
+  return variable && functionTypeCheck(variable);
 }
 
 var Queue = function Queue(initial, clone) {
