@@ -1,4 +1,3 @@
-
 export const d = document;
 export const w = window;
 export const getElementsByTagName = 'getElementsByTagName';

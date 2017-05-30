@@ -2,15 +2,21 @@
   "name": "justloads",
   "version": "1.0.0",
   "description": "simple module for just loading the stuff you neet",
-  "main": "index.js",
+  "author": "Janik Prottung <jprottung@chip.de>",
+  "license": "MIT",
+  "browser": "dist/justloads.min.js",
+  "main": "dist/justloads.umd.js",
+  "jsnext:main": "dist/justloads.es.js",
+  "module": "dist/justloads.es.js",
   "scripts": {
-    "watch": "rollup -c --watch --environment NODE_ENV:delevopment",
-    "buildDev": "rollup -c --environment NODE_ENV:delevopment",
-    "buildPrd": "rollup -c --environment NODE_ENV:production",
-    "build": "npm-run-all buildDev buildPrd",
-    "dev": "npm-run-all --parallel watch browse",
-    "browse": "browser-sync start --server examples --serveStatic dist --index index.html --files examples,dist --no-notify --reload-delay 200",
-    "test": "test"
+    "prebuild": "eslint src",
+    "build": "rollup -c config/rollup.config.js",
+    "build:watch": "rollup -c -w config/rollup.config.js",
+    "pretest": "rollup -c config/rollup.config.tests.js",
+    "test": "mocha build/tests-bundle.js",
+    "start": "browser-sync start -c ./config/bs-config.js",
+    "start:dev": "npm-run-all --parallel start build:watch",
+    "prepublish": "npm run build && npm test"
   },
   "keywords": [
     "loading",
@@ -19,22 +25,27 @@
     "asynchronous",
     "performance"
   ],
-  "author": "Janik Prottung",
-  "license": "ISC",
+  "dependencies": {},
   "devDependencies": {
-    "babel-preset-es2015-rollup": "^3.0.0",
-    "browser-sync": "^2.18.8",
+    "browser-sync": "^2.18.12",
+    "chai": "^4.0.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.3.0",
+    "jsdom": "^11.0.0",
+    "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
     "rollup": "^0.41.6",
-    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-buble": "^0.15.0",
     "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-eslint": "^3.0.0",
+    "rollup-plugin-istanbul": "^1.1.0",
+    "rollup-plugin-json": "^2.1.1",
+    "rollup-plugin-minify": "^1.0.3",
+    "rollup-plugin-multi-entry": "^2.0.1",
+    "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-uglify": "^1.0.1",
-    "rollup-watch": "^3.2.2"
-  },
-  "dependencies": {
-    "debug": "^2.6.6"
+    "rollup-watch": "^3.2.2",
+    "sinon": "^2.3.2",
+    "source-map-support": "^0.4.15"
   }
 }

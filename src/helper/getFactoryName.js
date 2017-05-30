@@ -7,5 +7,5 @@ import firstToUpper from './firstToUpper';
  * @return {string}
  */
 export default function getFactoryName(name, suffix = '') {
-    return firstToUpper(name) + suffix;
+  return firstToUpper(name) + suffix;
 }

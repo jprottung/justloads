@@ -1,8 +1,12 @@
+
+import isArray from './isArray';
+
 /**
  * Simple is object check.
- * @param item
- * @returns {boolean}
+ * @param {*} variable
+ * @returns {*|boolean}
  */
-export default function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item) && item !== null);
+export default function isObject(variable) {
+  return (variable && typeof variable === 'object' &&
+  !isArray(variable) && variable !== null);
 }
