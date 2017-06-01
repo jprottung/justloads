@@ -5,7 +5,7 @@ import Resource from '../models/Resource';
  * @return {{createResource: (function({key: string, type: string, options: Object, status?: string}))}}
  * @constructor
  */
-const ResourceFactory = () => {
+const ResourceFactory = (() => {
   /**
    *
    * @type {Object}
@@ -32,6 +32,6 @@ const ResourceFactory = () => {
       return newResource;
     }
   };
-};
+})();
 
 export default ResourceFactory;

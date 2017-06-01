@@ -1,12 +1,9 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import createTestDom from './../test_helpers/createTestDom';
 import isElement from '../../src/helper/isElement';
 
 describe('isElement', () => {
   it('should be true when element', () => {
-    const dom = createTestDom();
-    const document = dom.window.document;
     assert.isOk(isElement(document.createElement('div')), 'element is an element');
   });
 

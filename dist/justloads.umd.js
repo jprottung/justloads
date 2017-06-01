@@ -4,6 +4,13 @@
 	(global.justloads = factory());
 }(this, (function () { 'use strict';
 
+var d = document;
+var w = window;
+var getElementsByTagName = 'getElementsByTagName';
+var readyState = 'readyState';
+var onreadystatechange = 'onreadystatechange';
+var addEventListener = 'addEventListener';
+
 /**
  *
  * @type {string}
@@ -34,12 +41,6 @@ function firstToUpper(text) {
       .toUpperCase() + text.slice(1);
 }
 
-/**
- *
- * @param {string} name
- * @param {string} [suffix]
- * @return {string}
- */
 function getFactoryName(name, suffix) {
   if ( suffix === void 0 ) suffix = '';
 
@@ -60,13 +61,6 @@ AbstractLoader.prototype.load = function load (resource) { // eslint-disable-lin
 function isString(variable) {
   return typeof variable === 'string' || variable instanceof String;
 }
-
-var d = document;
-
-var getElementsByTagName = 'getElementsByTagName';
-var readyState = 'readyState';
-var onreadystatechange = 'onreadystatechange';
-var addEventListener = 'addEventListener';
 
 /**
  *
@@ -103,10 +97,6 @@ function createOrModifyElement(typeOrElement, attributes) {
   return element;
 }
 
-/**
- * gets the element head
- * @returns {Element}
- */
 function getHead() {
   return d[getElementsByTagName]('head')[0] || d.documentElement;
 }
@@ -126,11 +116,6 @@ function insertElement(element, ref) {
   ref.parentNode.insertBefore(element, ref);
 }
 
-/**
- *
- * @param element
- * @returns {Promise}
- */
 function loadElementPromise(element) {
   var complete = false;
 
@@ -269,7 +254,7 @@ var Loaders = {
   JsLoader: JsLoader
 };
 
-var LoaderFactory = function () {
+var LoaderFactory = (function () {
   var loaderStorage = {};
 
   return {
@@ -294,7 +279,7 @@ var LoaderFactory = function () {
       return newLoader;
     }
   };
-};
+})();
 
 var optimizableIsFunction = typeof /./ !== 'function' && typeof Int8Array !== 'object' &&
   typeof nodelist !== 'function';
@@ -334,7 +319,7 @@ var Queue = function Queue(initial, clone) {
   }
 };
 
-Queue.checkMethod = function checkMethod (fn) {
+Queue.prototype.checkMethod = function checkMethod (fn) {
   if (!isFunction(fn)) {
     throw new TypeError('fn must be a function');
   }
@@ -363,7 +348,7 @@ Queue.prototype.call = function call (fn, args) {
     if ( args === void 0 ) args = [];
 
   this.checkMethod(fn);
-  fn.apply(args);
+  fn.apply(void 0, args);
 };
 
 Queue.prototype.push = function push () {
@@ -398,7 +383,7 @@ var ObjectFnQueue = (function (Queue$$1) {
     var fn = this.obj[methodName];
 
     try {
-      Queue$$1.prototype.checkMethod.call(this, fn);
+      this.checkMethod(fn);
     } catch (e) {
       throw new ReferenceError(("The function " + methodName + " does not exist.'"));
     }
@@ -432,7 +417,10 @@ var justloads = {
   },
 };
 
-window.jl_queue = new ObjectFnQueue(justloads, window.jl_queue || []);
+var jlQueueName = 'jl_queue';
+var jlQueue = new ObjectFnQueue(justloads, w[jlQueueName] || []);
+jlQueue.empty();
+w[jlQueueName] = jlQueue;
 
 return justloads;
 

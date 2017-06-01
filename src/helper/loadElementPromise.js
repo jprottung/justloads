@@ -2,7 +2,7 @@ import { readyState, onreadystatechange, addEventListener } from './../constants
 
 /**
  *
- * @param element
+ * @param {Element} element
  * @returns {Promise}
  */
 export default function loadElementPromise(element) {

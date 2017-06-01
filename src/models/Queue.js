@@ -9,7 +9,7 @@ class Queue {
     }
   }
 
-  static checkMethod(fn) {
+  checkMethod(fn) {
     if (!isFunction(fn)) {
       throw new TypeError('fn must be a function');
     }
@@ -33,7 +33,7 @@ class Queue {
    */
   call(fn, args = []) {
     this.checkMethod(fn);
-    fn.apply(args);
+    fn(...args);
   }
 
   push(...args) {

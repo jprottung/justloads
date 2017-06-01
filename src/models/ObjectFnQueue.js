@@ -23,7 +23,7 @@ class ObjectFnQueue extends Queue {
     const fn = this.obj[methodName];
 
     try {
-      super.checkMethod(fn);
+      this.checkMethod(fn);
     } catch (e) {
       throw new ReferenceError(`The function ${methodName} does not exist.'`);
     }

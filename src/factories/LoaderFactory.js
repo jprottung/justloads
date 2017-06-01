@@ -2,7 +2,7 @@ import { TYPE_CONSTANTS } from '../constants/types';
 import getFactoryName from '../helper/getFactoryName';
 import Loaders from '../loader/Loaders';
 
-const LoaderFactory = () => {
+const LoaderFactory = (() => {
   const loaderStorage = {};
 
   return {
@@ -27,6 +27,6 @@ const LoaderFactory = () => {
       return newLoader;
     }
   };
-};
+})();
 
 export default LoaderFactory;
