@@ -1,8 +1,6 @@
-import CssLoader from './CssLoader';
-import JsLoader from './JsLoader';
+import ElementLoader from './ElementLoader';
 
 export default {
-  CssLoader,
-  JsLoader
+  ElementLoader
 };
 

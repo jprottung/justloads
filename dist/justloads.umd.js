@@ -25,12 +25,26 @@ var TYPE_CSS = 'css';
 
 /**
  *
+ * @type {string}
+ */
+var TYPE_ELEMENT = 'element';
+
+/**
+ *
  * @type {[string]}
  */
 var TYPE_CONSTANTS = [
   TYPE_JS,
-  TYPE_CSS
+  TYPE_CSS,
+  TYPE_ELEMENT
 ];
+
+var TYPE_HIERARCHIES = {};
+
+TYPE_HIERARCHIES[TYPE_JS] = TYPE_ELEMENT;
+TYPE_HIERARCHIES[TYPE_CSS] = TYPE_ELEMENT;
+
+// export TYPE_HIERARCHIES;
 
 /**
  * capitalizes the first letter of a given text string
@@ -41,17 +55,17 @@ function firstToUpper(text) {
       .toUpperCase() + text.slice(1);
 }
 
+/**
+ *
+ * @param {string} name
+ * @param {string} [suffix]
+ * @return {string}
+ */
 function getFactoryName(name, suffix) {
   if ( suffix === void 0 ) suffix = '';
 
   return firstToUpper(name) + suffix;
 }
-
-var AbstractLoader = function AbstractLoader () {};
-
-AbstractLoader.prototype.load = function load (resource) { // eslint-disable-line
-  throw new Error('this is an abstract function');
-};
 
 /**
  * checks if the value of a variable is from type string
@@ -97,6 +111,10 @@ function createOrModifyElement(typeOrElement, attributes) {
   return element;
 }
 
+/**
+ * gets the element head
+ * @returns {Node}
+ */
 function getHead() {
   return d[getElementsByTagName]('head')[0] || d.documentElement;
 }
@@ -108,7 +126,7 @@ var defaultRef = defaultRefs[defaultRefs.length - 1];
  * inserts an element before the given ref or if no reference is given as the last element
  * of the body or head depending on what is already registered
  * @param {Element} element
- * @param {Element} [ref]
+ * @param {Node} [ref]
  */
 function insertElement(element, ref) {
   if ( ref === void 0 ) ref = defaultRef;
@@ -116,6 +134,11 @@ function insertElement(element, ref) {
   ref.parentNode.insertBefore(element, ref);
 }
 
+/**
+ *
+ * @param {Element} element
+ * @returns {Promise}
+ */
 function loadElementPromise(element) {
   var complete = false;
 
@@ -128,7 +151,7 @@ function loadElementPromise(element) {
     };
 
     if (element[readyState]) {
-      element[onreadystatechange] = function onreadystatechangeHandler() {
+      element[onreadystatechange] = function onReadyStateChangeHandler() {
         if (!complete && (element[readyState] === 'complete')) {
           complete = true;
           resolveHandler();
@@ -143,146 +166,263 @@ function loadElementPromise(element) {
   });
 }
 
-var AbstractElementLoader = (function (AbstractLoader$$1) {
-  function AbstractElementLoader() {
-    AbstractLoader$$1.call(this);
-    this.beforeAttributes = {};
-    this.successAttributes = {};
-    this.failAttributes = {};
-    this.type = 'div';
-  }
+var ElementLoader = function ElementLoader () {};
 
-  if ( AbstractLoader$$1 ) AbstractElementLoader.__proto__ = AbstractLoader$$1;
-  AbstractElementLoader.prototype = Object.create( AbstractLoader$$1 && AbstractLoader$$1.prototype );
-  AbstractElementLoader.prototype.constructor = AbstractElementLoader;
+ElementLoader.prototype.load = function load (resource) {
+  var element = createOrModifyElement(resource.tag, resource.attr);
 
-  /**
-   *
-   * @param beforeAttributes
-   * @param successAttributes
-   * @param failAttributes
-   * @return {*}
-   */
-  AbstractElementLoader.prototype.loadElement = function loadElement (beforeAttributes, successAttributes, failAttributes) {
-    if ( beforeAttributes === void 0 ) beforeAttributes = {};
-    if ( successAttributes === void 0 ) successAttributes = {};
-    if ( failAttributes === void 0 ) failAttributes = {};
+  var promise = loadElementPromise(element);
+  promise.then(
+    function (element) { return createOrModifyElement(element, resource.sAttr); },
+    function (error, element) { return createOrModifyElement(element, resource.fAttr); });
 
-    var before = Object.assign({}, this.beforeAttributes, beforeAttributes);
-    var success = Object.assign({}, this.successAttributes, successAttributes);
-    var fail = Object.assign({}, this.failAttributes, failAttributes);
+  insertElement(element);
 
-    var element = createOrModifyElement(this.type, before);
-
-    var promise = loadElementPromise(element);
-    promise.then(
-      function (element) { return createOrModifyElement(element, success); },
-      function (error, element) { return createOrModifyElement(element, fail); });
-
-    insertElement(element);
-
-    return promise;
-  };
-
-  return AbstractElementLoader;
-}(AbstractLoader));
-
-var CssLoader = (function (AbstractElementLoader$$1) {
-  function CssLoader() {
-    AbstractElementLoader$$1.call(this);
-
-    this.type = 'link';
-
-    Object.assign(this.beforeAttributes, {
-      rel: 'stylesheet',
-      media: 'x'
-    });
-
-    Object.assign(this.successAttributes, {
-      media: 'all'
-    });
-  }
-
-  if ( AbstractElementLoader$$1 ) CssLoader.__proto__ = AbstractElementLoader$$1;
-  CssLoader.prototype = Object.create( AbstractElementLoader$$1 && AbstractElementLoader$$1.prototype );
-  CssLoader.prototype.constructor = CssLoader;
-
-  /**
-   *
-   * @param {Resource} resource
-   */
-  CssLoader.prototype.load = function load (resource) {
-    return this.loadElement({
-      href: resource.href
-    });
-  };
-
-  return CssLoader;
-}(AbstractElementLoader));
-
-var JsLoader = (function (AbstractElementLoader$$1) {
-  function JsLoader() {
-    AbstractElementLoader$$1.call(this);
-
-    this.type = 'script';
-
-    Object.assign(this.beforeAttributes, {
-      type: 'text/javascript',
-      async: 1
-    });
-  }
-
-  if ( AbstractElementLoader$$1 ) JsLoader.__proto__ = AbstractElementLoader$$1;
-  JsLoader.prototype = Object.create( AbstractElementLoader$$1 && AbstractElementLoader$$1.prototype );
-  JsLoader.prototype.constructor = JsLoader;
-
-  /**
-   *
-   * @param {Resource} resource
-   */
-  JsLoader.prototype.load = function load (resource) {
-    return this.loadElement({
-      src: resource.src
-    });
-  };
-
-  return JsLoader;
-}(AbstractElementLoader));
+  return promise;
+};
 
 var Loaders = {
-  CssLoader: CssLoader,
-  JsLoader: JsLoader
+  ElementLoader: ElementLoader
 };
 
 var LoaderFactory = (function () {
   var loaderStorage = {};
 
-  return {
-    /**
-     *
-     * @param {string} type
-     * @return {AbstractLoader}
-     */
-    get: function get(type) {
-      if (TYPE_CONSTANTS.indexOf(type) === -1) {
-        throw new ReferenceError(("You tried to get an unsupported loader of type " + type));
-      }
-
-      var storedLoader = loaderStorage[type];
-
-      if (storedLoader) {
-        return storedLoader;
-      }
-
-      var newLoader = new Loaders[getFactoryName(type, 'Loader')]();
-      loaderStorage[type] = newLoader;
-      return newLoader;
+  /**
+   *
+   * @param {string} type
+   * @return {ElementLoader}
+   */
+  function get(type) {
+    if (TYPE_CONSTANTS.indexOf(type) === -1) {
+      throw new ReferenceError(("You tried to get an unsupported loader of type " + type));
     }
+
+    var hierarchyType = TYPE_HIERARCHIES[type];
+
+    if (hierarchyType) {
+      type = hierarchyType;
+    }
+
+    var storedLoader = loaderStorage[type];
+
+    if (storedLoader) {
+      return storedLoader;
+    }
+
+    var newLoader = new Loaders[getFactoryName(type, 'Loader')]();
+    loaderStorage[type] = newLoader;
+    return newLoader;
+  }
+
+  /**
+   *
+   * @param {Resource} resource
+   * @returns {Promise}
+   */
+  function load(resource) {
+    return get(resource.type)
+      .load(resource);
+  }
+
+  return {
+    load: load
   };
 })();
 
-var optimizableIsFunction = typeof /./ !== 'function' && typeof Int8Array !== 'object' &&
-  typeof nodelist !== 'function';
+/**
+ *
+ * @type {string}
+ */
+var RESOURCE_INITIALIZED = 'initialized';
+
+/**
+ *
+ * @type {string}
+ */
+
+
+/**
+ *
+ * @type {string}
+ */
+
+
+/**
+ *
+ * @type {string}
+ */
+
+
+/**
+ *
+ * @type {[string]}
+ */
+
+/**
+ *
+ */
+var Resource = function Resource(options) {
+  this.key = options.key;
+  this.type = options.type;
+  this.url = options.url;
+  this.status = options.status || RESOURCE_INITIALIZED;
+};
+
+var ElementResource = (function (Resource$$1) {
+  function ElementResource(options) {
+    Resource$$1.call(this, options);
+    this.tag = options.tag;
+    this.attr = options.attr || {};
+    this.fAttr = options.fAttr || {};
+    this.sAttr = options.sAttr || {};
+  }
+
+  if ( Resource$$1 ) ElementResource.__proto__ = Resource$$1;
+  ElementResource.prototype = Object.create( Resource$$1 && Resource$$1.prototype );
+  ElementResource.prototype.constructor = ElementResource;
+
+  return ElementResource;
+}(Resource));
+
+var JsResource = (function (ElementResource$$1) {
+  function JsResource(options) {
+    ElementResource$$1.call(this, options);
+
+    this.tag = this.tag || 'script';
+
+    var attr = this.attr;
+
+    attr.src = attr.src || this.url;
+    attr.type = attr.type || 'text/javascript';
+    attr.defer = attr.defer || 1;
+  }
+
+  if ( ElementResource$$1 ) JsResource.__proto__ = ElementResource$$1;
+  JsResource.prototype = Object.create( ElementResource$$1 && ElementResource$$1.prototype );
+  JsResource.prototype.constructor = JsResource;
+
+  return JsResource;
+}(ElementResource));
+
+var STYLE_MEDIA_DEFAULT = 'all';
+
+var CssResource = (function (ElementResource$$1) {
+  function CssResource(options) {
+    ElementResource$$1.call(this, options);
+
+    this.tag = this.tag || 'link';
+
+    var attr = this.attr;
+
+    attr.rel = attr.rel || 'stylesheet';
+    attr.media = attr.media || 'x';
+    attr.href = attr.href || this.url;
+
+    var sAttr = this.sAttr;
+
+    sAttr.media = sAttr.media || STYLE_MEDIA_DEFAULT;
+  }
+
+  if ( ElementResource$$1 ) CssResource.__proto__ = ElementResource$$1;
+  CssResource.prototype = Object.create( ElementResource$$1 && ElementResource$$1.prototype );
+  CssResource.prototype.constructor = CssResource;
+
+  return CssResource;
+}(ElementResource));
+
+var Resources = {
+  JsResource: JsResource,
+  CssResource: CssResource,
+  ElementResource: ElementResource
+};
+
+/**
+ * @param {string} pathOrUrl
+ */
+function getFileExtension(pathOrUrl) {
+  var ext = pathOrUrl.substr(pathOrUrl.lastIndexOf('.') + 1);
+
+  return ext.split('?')[0];
+}
+
+function resolveType(url) {
+  var ext = getFileExtension(url);
+  var type = false;
+
+  if (ext === 'js') {
+    type = TYPE_JS;
+  } else if (ext === 'css') {
+    type = TYPE_CSS;
+  }
+
+  return type;
+}
+
+/**
+ *
+ * @return {{createResource: (function({key: string, type: string, options: Object, status?: string}))}}
+ * @constructor
+ */
+var ResourceManager = (function () {
+  /**
+   *
+   * @type {Object}
+   */
+  var resourceStorage = {};
+
+  /**
+   * @param {{key:string, type:string, [status]: string}} options
+   * @return {Resource}
+   */
+  function create(options) {
+    options.type = options.type || resolveType(options.url || '');
+
+    var type = options.type;
+
+    if (TYPE_CONSTANTS.indexOf(type) === -1) {
+      throw new ReferenceError(("You tried to get an unsupported resource of type " + type));
+    }
+
+    return new Resources[getFactoryName(type, 'Resource')](options);
+  }
+
+  /**
+   *
+   * @param {string|object} keyOrOptions
+   * @returns {Resource}
+   */
+  function get(keyOrOptions) {
+    var options = keyOrOptions;
+
+    if (isString(keyOrOptions)) {
+      options = {
+        key: keyOrOptions,
+        url: keyOrOptions
+      };
+    }
+
+    var key = options.key;
+    var storedResource = resourceStorage[key];
+
+    if (storedResource) {
+      return storedResource;
+    }
+
+    var resource = create(options);
+
+    resourceStorage[key] = resource;
+
+    return resource;
+  }
+
+  return {
+    get: get
+  };
+})();
+
+var betterIsFunctionPossible = typeof /./ !== 'function' && typeof Int8Array !== 'object' &&
+  typeof NodeList !== 'function';
 
 /**
  * resolves whether a variable is of type function
@@ -290,7 +430,7 @@ var optimizableIsFunction = typeof /./ !== 'function' && typeof Int8Array !== 'o
  * @return {boolean}
  */
 function functionTypeCheck(variable) {
-  if (optimizableIsFunction) {
+  if (betterIsFunctionPossible) {
     return typeof variable === 'function' || false;
   }
 
@@ -333,7 +473,7 @@ Queue.prototype.empty = function empty () {
 
   var queue = this.queue;
   while (queue.length) {
-    var current = queue.pop();
+    var current = queue.shift();
     (ref = this$1).call.apply(ref, current);
   }
     var ref;
@@ -410,10 +550,15 @@ var ObjectFnQueue = (function (Queue$$1) {
 }(Queue));
 
 // Import a couple modules for testing.
+var time = performance.now();
+
 var justloads = {
-  load: function (type, options) {
-    LoaderFactory.get(type)
-      .load(options);
+  load: function (options) {
+    var resource = ResourceManager.get(options);
+    LoaderFactory.load(resource)
+      .then(function () {
+        //console.log(`${(performance.now() - time)}: ${resource.key}`);
+      });
   },
 };
 

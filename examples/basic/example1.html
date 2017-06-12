@@ -7,18 +7,42 @@
 <body>
 <a href="/">< back</a>
 <script>
-    window.jl_queue = window.jl_queue||[];
-    window.jl_queue.push(['load', ['css', {href: 'test.css'}]]);
-    window.jl_queue.push(['load', ['js', {src: 'test.js'}]]);
+  window.jl_queue = window.jl_queue || [];
+  window.jl_queue.push([
+    'load',
+    ['test.css']
+  ]);
+  window.jl_queue.push([
+    'load',
+    ['test.js']
+  ]);
+  //  window.jl_queue.push([
+  //    'load',
+  //    [
+  //      {
+  //        key: 'testCss',
+  //        url: 'test.css'
+  //      }
+  //    ]
+  //  ]);
+  //  window.jl_queue.push([
+  //    'load',
+  //    [
+  //      {
+  //        key: 'testJs',
+  //        url: 'test.js'
+  //      }
+  //    ]
+  //  ]);
 </script>
 <script>
-    (function () {
-        var head = document.getElementsByTagName('head')[0],
-            script = document.createElement('script');
-        script.async = true;
-        script.src = '/justloads.js';
-        head.appendChild(script);
-    }());
+  (function () {
+    var head = document.getElementsByTagName('head')[0],
+      script = document.createElement('script');
+    script.async = true;
+    script.src = '/justloads.js';
+    head.appendChild(script);
+  }());
 </script>
 </body>
 </html>

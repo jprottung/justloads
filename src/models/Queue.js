@@ -21,7 +21,7 @@ class Queue {
   empty() {
     const queue = this.queue;
     while (queue.length) {
-      const current = queue.pop();
+      const current = queue.shift();
       this.call(...current);
     }
   }

@@ -17,7 +17,7 @@ export default function loadElementPromise(element) {
     };
 
     if (element[readyState]) {
-      element[onreadystatechange] = function onreadystatechangeHandler() {
+      element[onreadystatechange] = function onReadyStateChangeHandler() {
         if (!complete && (element[readyState] === 'complete')) {
           complete = true;
           resolveHandler();

@@ -1,5 +1,5 @@
-const optimizableIsFunction = typeof /./ !== 'function' && typeof Int8Array !== 'object' &&
-  typeof nodelist !== 'function';
+const betterIsFunctionPossible = typeof /./ !== 'function' && typeof Int8Array !== 'object' &&
+  typeof NodeList !== 'function';
 
 /**
  * resolves whether a variable is of type function
@@ -7,7 +7,7 @@ const optimizableIsFunction = typeof /./ !== 'function' && typeof Int8Array !== 
  * @return {boolean}
  */
 function functionTypeCheck(variable) {
-  if (optimizableIsFunction) {
+  if (betterIsFunctionPossible) {
     return typeof variable === 'function' || false;
   }
 

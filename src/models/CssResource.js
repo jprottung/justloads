@@ -3,11 +3,19 @@ import { STYLE_MEDIA_DEFAULT } from '../constants/resource';
 
 class CssResource extends ElementResource {
   constructor(options) {
-    options.type = 'link';
     super(options);
 
-    this.href = options.href;
-    this.media = options.media || STYLE_MEDIA_DEFAULT;
+    this.tag = this.tag || 'link';
+
+    const attr = this.attr;
+
+    attr.rel = attr.rel || 'stylesheet';
+    attr.media = attr.media || 'x';
+    attr.href = attr.href || this.url;
+
+    const sAttr = this.sAttr;
+
+    sAttr.media = sAttr.media || STYLE_MEDIA_DEFAULT;
   }
 }
 

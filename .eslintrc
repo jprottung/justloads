@@ -10,7 +10,7 @@
         "es6": true
     },
     "rules": {
-        "max-len": ["warn", 100],
+        "max-len": ["warn", 100, {"ignoreComments": true}],
         "import/prefer-default-export": 0,
         "arrow-parens": 0,
         "padded-blocks": 0,
